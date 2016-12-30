@@ -3,3 +3,5 @@ encoding//principal/forms.py=utf-8
 encoding//principal/models.py=utf-8
 encoding//principal/views.py=utf-8
 encoding//songs2you/settings.py=utf-8
+encoding//songs2you/templates/index.html=UTF-8
+encoding/populateDatabase.py=iso-8859-15

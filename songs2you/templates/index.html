@@ -2,10 +2,16 @@
 
 {% block title %} index {% endblock %}
 
-{% block header %}
-	<h1>songs2you</h1>
-{% endblock %}
-
 {% block content %}
-	<p>Welcome!</p>
+	<form class="form-inline">
+	  <div class="form-group">
+	    <label class="sr-only">Search criteria</label>
+	    <p class="form-control-static"></p>
+	  </div>
+	  <div class="form-group">
+	    <label for="search-criteria" class="sr-only">Search criteria</label>
+	    <input type="password" class="form-control" size="50" id="search-criteria" placeholder="search for an artist, album or song">
+	  </div>
+	  <button type="submit" class="btn btn-primary">Search</button>
+	</form>
 {% endblock %}
