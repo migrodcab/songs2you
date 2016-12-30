@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8">
+	<title>songs2you - {% block title %}{% endblock %}</title>
+	<link rel='stylesheet' href='{{STATIC_URL}}css/bootstrap.min.css'>
+	<link rel='stylesheet' href='{{STATIC_URL}}css/bootstrap-theme.min.css'>
+	<script src=''{{STATIC_URL}}js/bootstrap.min.js'></script>
+	<script src=''{{STATIC_URL}}js/npm.js'></script>
+</head>
+<body>
+	<header>
+		{% block header %}{% endblock %}
+		<nav>
+			<ul>
+				<li><a href='/'>Home</a></li>
+			</ul>
+		</nav>
+		<hr>
+	</header>
+	<section class="content">
+		{% block content %}{% endblock %}
+	</section>
+	<footer>
+		<p>&copy;2016 songs2you</p>
+	</footer>
+</body>
+</html>
