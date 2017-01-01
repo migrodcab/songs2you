@@ -43,5 +43,6 @@ def displayAlbum(request,albumId):
 
 def displayArtist(request,artistId):
     artist = get_object_or_404(Artista, pk=artistId)
+    albums = Album.objects.filter(Artista=artist)
     
-    return render_to_response('artist.html',{'artist':artist},context_instance=RequestContext(request))
+    return render_to_response('artist.html',{'artist':artist,'albums':albums},context_instance=RequestContext(request))

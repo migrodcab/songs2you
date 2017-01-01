@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title %} album {% endblock %}
+{% block title %} {{album.Nombre}} ({{album.Artista.Nombre}} {% endblock %}
 
 {% block content %}
 
@@ -9,7 +9,7 @@
 			<img src="{{album.ImagenPortada}}" width="200"/>
 		</div>
 		<div class="col-md-3">
-			<h3>{{album.Nombre}}</h3>
+			<h3>{{album.Nombre}} ({{album.FechaPublicacion|date:"Y"}})</h3>
 			<h4>{{album.Artista.Nombre}}</h4>
 		</div>
 	</div>

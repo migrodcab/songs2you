@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block title %} {{artist.Nombre}} {% endblock %}
+
+{% block style %}
+	.col-md-4 {
+		cursor:pointer;
+	}
+{% endblock %}
+
+{% block content %}
+
+	<div>
+		<h2>{{artist.Nombre}}</h2>
+		<h4>{{artist.Miembros}}</h4>
+		<p>{{artist.Generos}}</p>
+	</div>
+
+	<div class="row">
+		{% for album in albums %}
+			<div class="col-md-4" onclick="location.href = '/album/{{album.id}}';">
+				<div><img src="{{album.ImagenPortada}}" width="150"/></div>
+				<div><h3>{{album.Nombre}} ({{album.FechaPublicacion|date:"Y"}})</h3></div>
+			</div>
+		{% endfor %}
+	</div>
+{% endblock %}
