@@ -17,18 +17,13 @@ def searchForm(request):
         albums = Album.objects.filter(Nombre__contains=form.cleaned_data['criteria'])
         songs = Cancion.objects.filter(Nombre__contains=form.cleaned_data['criteria'])
         return render_to_response('index.html',{'form':form,'artists':artists,'albums':albums,'songs':songs,'numArtists':numArtists,'numAlbums':numAlbums,'numSongs':numSongs},context_instance=RequestContext(request))
-
-def index(request):
-    numArtists = Artista.objects.count()
-    numAlbums = Album.objects.count()
-    numSongs = Cancion.objects.count()
-    
-    if request.method=='POST':
-        return searchForm(request)
     else:
         form = SearchForm()
     
     return render_to_response('index.html',{"form":form,"numArtists":numArtists,"numAlbums":numAlbums,"numSongs":numSongs},context_instance=RequestContext(request))
+
+def index(request):
+    return searchForm(request)
 
 def displayAlbum(request,albumId):
     album = get_object_or_404(Album, pk=albumId)
