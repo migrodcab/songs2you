@@ -16,6 +16,8 @@ urlpatterns = patterns('',
     url(r'^artistas/(?P<genero>.*)$','principal.views.artistas'),
     url(r'^album/(?P<albumId>\d+)$','principal.views.displayAlbum'),
     url(r'^artist/(?P<artistId>\d+)$','principal.views.displayArtist'),
+    url(r'^user/new$','principal.views.newUser'),
+    url(r'^login/$','principal.views.loginUser'),
     url(r'^$','principal.views.index'),
     url(r'^media/(?P<path>.*)$','django.views.static.serve',
         {'document_root':settings.MEDIA_ROOT,}

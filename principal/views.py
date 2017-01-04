@@ -2,11 +2,17 @@
 from django.shortcuts import render_to_response, get_object_or_404, render
 from django.template.context import RequestContext
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from principal.forms import SearchForm
 from principal.models import Artista, Album, Cancion
 
 from utils import *
+from django.http import HttpResponseRedirect
 
 
 def searchForm(request):
@@ -110,3 +116,34 @@ def displayArtist(request,artistId):
         form = SearchForm()
     
     return render_to_response('artist.html',{'form':form,'artist':artist,'albums':albums},context_instance=RequestContext(request))
+
+def newUser(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/')
+    else:
+        form = UserCreationForm()
+        
+    return render_to_response('newuser.html', {'userForm':form}, context_instance=RequestContext(request))
+
+def loginUser(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request.POST)
+        user = request.POST['username']
+        passw = request.POST['password']
+        access = authenticate(username=user, password=passw)
+        if access is not None:
+            if access.is_active:
+                login(request, access)
+                return HttpResponseRedirect('/private')
+            else:
+                return render_to_response('noactive.html', context_instance=RequestContext(request))
+        else:
+            messages.error(request, "Access Error: User and password do not match or do not exist.")
+    else:
+        form = AuthenticationForm()
+    
+    return render_to_response('login.html', {'userForm':form}, context_instance=RequestContext(request))
+
