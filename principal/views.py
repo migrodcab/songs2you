@@ -6,6 +6,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from principal.forms import SearchForm
 from principal.models import Artista, Album, Cancion
 
+from utils import *
+
 
 def searchForm(request):
     numArtists = Artista.objects.count()
@@ -22,12 +24,18 @@ def searchForm(request):
         form = SearchForm()
     
     return render_to_response('index.html',{"form":form,"numArtists":numArtists,"numAlbums":numAlbums,"numSongs":numSongs},context_instance=RequestContext(request))
-
-def canciones(request):
-    canciones = Cancion.objects.all()
+    
+def canciones(request, genero=None):  
     page = request.GET.get('page', 1)
-
-    paginator = Paginator(canciones, 4)
+    
+    if genero != None:
+        canciones = Cancion.objects.filter(Generos__contains=genero)
+        paginator = Paginator(canciones, 4)
+    
+    if genero == None:
+        generos = todosLosGeneros("cancion")
+        paginator = Paginator(generos, 12)
+  
     try:
         data = paginator.page(page)
     except PageNotAnInteger:
@@ -35,13 +43,63 @@ def canciones(request):
     except EmptyPage:
         data = paginator.page(paginator.num_pages)
 
-    #return render(request, 'canciones.html', { 'data': data })
     if request.method=='POST':
         return searchForm(request)
     else:
         form = SearchForm()
     
-    return render_to_response('canciones.html',{'form':form,'data':data},context_instance=RequestContext(request))
+    return render_to_response('canciones.html',{'form':form, 'data':data, 'genero':genero},context_instance=RequestContext(request))
+
+def albumes(request, genero=None):  
+    page = request.GET.get('page', 1)
+    
+    if genero != None:
+        albumes = Album.objects.filter(Generos__contains=genero)
+        paginator = Paginator(albumes, 4)
+    
+    if genero == None:
+        generos = todosLosGeneros("album")
+        paginator = Paginator(generos, 12)
+  
+    try:
+        data = paginator.page(page)
+    except PageNotAnInteger:
+        data = paginator.page(1)
+    except EmptyPage:
+        data = paginator.page(paginator.num_pages)
+
+    if request.method=='POST':
+        return searchForm(request)
+    else:
+        form = SearchForm()
+    
+    return render_to_response('albumes.html',{'form':form, 'data':data, 'genero':genero},context_instance=RequestContext(request))
+
+def artistas(request, genero=None):  
+    page = request.GET.get('page', 1)
+    
+    if genero != None:
+        artistas = Artista.objects.filter(Generos__contains=genero)
+        paginator = Paginator(artistas, 4)
+    
+    if genero == None:
+        generos = todosLosGeneros("artista")
+        paginator = Paginator(generos, 12)
+  
+    try:
+        data = paginator.page(page)
+    except PageNotAnInteger:
+        data = paginator.page(1)
+    except EmptyPage:
+        data = paginator.page(paginator.num_pages)
+
+    if request.method=='POST':
+        return searchForm(request)
+    else:
+        form = SearchForm()
+    
+    return render_to_response('artistas.html',{'form':form, 'data':data, 'genero':genero},context_instance=RequestContext(request))
+
 
 def index(request):
     return searchForm(request)
