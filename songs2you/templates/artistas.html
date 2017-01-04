@@ -10,7 +10,7 @@
 
 {% block content %}
 	{% if genero == None %}
-		<h1>Generos</h1>
+		<h1>Generos - Artistas</h1>
 		<div class="row">
 		{% for genero in data %}
 			<div class="col-md-4" onclick="location.href = '/artistas/{{genero}}';">
