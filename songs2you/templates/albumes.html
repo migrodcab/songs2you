@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title %} Generos {% endblock %}
+{% block title %} Albumes {% endblock %}
 
 {% block style %}
 	.col-md-4 {
@@ -9,12 +9,12 @@
 {% endblock %}
 
 {% block content %}
-
 	{% if genero == None %}
+		<h1>Generos</h1>
 		<div class="row">
 		{% for genero in data %}
 			<div class="col-md-4" onclick="location.href = '/albumes/{{genero}}';">
-				<div><h3>{{genero}}</h3></div>
+				<div><h4>{{genero}}</h4></div>
 			</div>
 		{% endfor %}
 		</div>
