@@ -42,13 +42,8 @@ def canciones(request, genero=None):
         data = paginator.page(1)
     except EmptyPage:
         data = paginator.page(paginator.num_pages)
-
-    if request.method=='POST':
-        return searchForm(request)
-    else:
-        form = SearchForm()
     
-    return render_to_response('canciones.html',{'form':form, 'data':data, 'genero':genero},context_instance=RequestContext(request))
+    return render_to_response('canciones.html',{'data':data, 'genero':genero},context_instance=RequestContext(request))
 
 def albumes(request, genero=None):  
     page = request.GET.get('page', 1)
@@ -67,13 +62,8 @@ def albumes(request, genero=None):
         data = paginator.page(1)
     except EmptyPage:
         data = paginator.page(paginator.num_pages)
-
-    if request.method=='POST':
-        return searchForm(request)
-    else:
-        form = SearchForm()
     
-    return render_to_response('albumes.html',{'form':form, 'data':data, 'genero':genero},context_instance=RequestContext(request))
+    return render_to_response('albumes.html',{'data':data, 'genero':genero},context_instance=RequestContext(request))
 
 def artistas(request, genero=None):  
     page = request.GET.get('page', 1)
@@ -92,13 +82,8 @@ def artistas(request, genero=None):
         data = paginator.page(1)
     except EmptyPage:
         data = paginator.page(paginator.num_pages)
-
-    if request.method=='POST':
-        return searchForm(request)
-    else:
-        form = SearchForm()
     
-    return render_to_response('artistas.html',{'form':form, 'data':data, 'genero':genero},context_instance=RequestContext(request))
+    return render_to_response('artistas.html',{'data':data, 'genero':genero},context_instance=RequestContext(request))
 
 
 def index(request):
