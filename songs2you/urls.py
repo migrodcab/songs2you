@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^user/new$','principal.views.newUser'),
     url(r'^login/$','principal.views.loginUser'),
     url(r'^userindex/$','principal.views.userIndex'),
+    url(r'^logout/$','principal.views.logoutUser'),
     url(r'^$','principal.views.index'),
     url(r'^media/(?P<path>.*)$','django.views.static.serve',
         {'document_root':settings.MEDIA_ROOT,}

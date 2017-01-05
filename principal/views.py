@@ -1,18 +1,20 @@
 #encoding:utf-8
 from django.shortcuts import render_to_response, get_object_or_404, render
 from django.template.context import RequestContext
+from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.models import User
 
 from principal.forms import SearchForm, UserForm
-from principal.models import Artista, Album, Cancion
+from principal.models import Artista, Album, Cancion, Profile
 
 from utils import *
-from django.http import HttpResponseRedirect
+
 
 
 def searchForm(request):
@@ -180,4 +182,9 @@ def loginUser(request):
 def userIndex(request):
     user = request.user
     return render_to_response('userindex.html', {'user':user}, context_instance=RequestContext(request))
+
+@login_required(login_url='/login')
+def logoutUser(request):
+    logout(request)
+    return HttpResponseRedirect('/')
 
