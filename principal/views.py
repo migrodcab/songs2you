@@ -131,24 +131,28 @@ def newUser(request):
                 lastName = form.cleaned_data['lastName']
                 email = form.cleaned_data['email']
                 gender = form.cleaned_data['gender']
-            
-                if password == repeatPass:
-                    user = User.objects.create_user(username=username, password=password)
-                    user.first_name = firstName
-                    user.last_name = lastName
-                    user.email = email
-                    user.save()
-                    Profile.objects.create(user=user, gender=gender)
                 
-                    access = authenticate(username=username, password=password)
-                    if access is not None:
-                        if access.is_active:
-                            login(request, access)
-                            return HttpResponseRedirect('/userindex')
-                        else:
-                            return render_to_response('noactive.html', context_instance=RequestContext(request))
+                user = User.objects.filter(username=username)
+                if len(user) == 0:
+                    if password == repeatPass:
+                        user = User.objects.create_user(username=username, password=password)
+                        user.first_name = firstName
+                        user.last_name = lastName
+                        user.email = email
+                        user.save()
+                        Profile.objects.create(user=user, gender=gender)
+                
+                        access = authenticate(username=username, password=password)
+                        if access is not None:
+                            if access.is_active:
+                                login(request, access)
+                                return HttpResponseRedirect('/userindex')
+                            else:
+                                return render_to_response('noactive.html', context_instance=RequestContext(request))
+                    else:
+                        messages.error(request, "Error: Both passwords must match.")
                 else:
-                    messages.error(request, "Error: Both passwords must match.")           
+                      messages.error(request, "Error: Username currently in use.") 
         else:
             form = UserForm()
     else:
