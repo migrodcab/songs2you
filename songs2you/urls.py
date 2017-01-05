@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     url(r'^artist/(?P<artistId>\d+)$','principal.views.displayArtist'),
     url(r'^user/new$','principal.views.newUser'),
     url(r'^login/$','principal.views.loginUser'),
+    url(r'^userindex/$','principal.views.userIndex'),
     url(r'^$','principal.views.index'),
     url(r'^media/(?P<path>.*)$','django.views.static.serve',
         {'document_root':settings.MEDIA_ROOT,}

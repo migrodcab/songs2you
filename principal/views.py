@@ -141,7 +141,7 @@ def newUser(request):
                 if access is not None:
                     if access.is_active:
                         login(request, access)
-                        return HttpResponseRedirect('/private')
+                        return HttpResponseRedirect('/userindex')
                     else:
                         return render_to_response('noactive.html', context_instance=RequestContext(request))
             else:
@@ -160,7 +160,7 @@ def loginUser(request):
         if access is not None:
             if access.is_active:
                 login(request, access)
-                return HttpResponseRedirect('/private')
+                return HttpResponseRedirect('/userindex')
             else:
                 return render_to_response('noactive.html', context_instance=RequestContext(request))
         else:
@@ -169,4 +169,9 @@ def loginUser(request):
         form = AuthenticationForm()
     
     return render_to_response('login.html', {'userForm':form}, context_instance=RequestContext(request))
+
+@login_required(login_url='/login')
+def userIndex(request):
+    user = request.user
+    return render_to_response('userindex.html', {'user':user}, context_instance=RequestContext(request))
 
