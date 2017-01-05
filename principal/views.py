@@ -118,55 +118,61 @@ def displayArtist(request,artistId):
     return render_to_response('artist.html',{'form':form,'artist':artist,'albums':albums},context_instance=RequestContext(request))
 
 def newUser(request):
-    if request.method == 'POST':
-        form = UserForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            repeatPass = form.cleaned_data['repeatPassword']
-            firstName = form.cleaned_data['firstName']
-            lastName = form.cleaned_data['lastName']
-            email = form.cleaned_data['email']
-            gender = form.cleaned_data['gender']
+    if request.user.is_anonymous():
+        if request.method == 'POST':
+            form = UserForm(request.POST)
+            if form.is_valid():
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password']
+                repeatPass = form.cleaned_data['repeatPassword']
+                firstName = form.cleaned_data['firstName']
+                lastName = form.cleaned_data['lastName']
+                email = form.cleaned_data['email']
+                gender = form.cleaned_data['gender']
             
-            if password == repeatPass:
-                user = User.objects.create_user(username=username, password=password)
-                user.first_name = firstName
-                user.last_name = lastName
-                user.email = email
-                user.save()
-                Profile.objects.create(user=user, gender=gender)
+                if password == repeatPass:
+                    user = User.objects.create_user(username=username, password=password)
+                    user.first_name = firstName
+                    user.last_name = lastName
+                    user.email = email
+                    user.save()
+                    Profile.objects.create(user=user, gender=gender)
                 
-                access = authenticate(username=username, password=password)
-                if access is not None:
-                    if access.is_active:
-                        login(request, access)
-                        return HttpResponseRedirect('/userindex')
-                    else:
-                        return render_to_response('noactive.html', context_instance=RequestContext(request))
-            else:
-                messages.error(request, "Error: Both passwords must match.")           
+                    access = authenticate(username=username, password=password)
+                    if access is not None:
+                        if access.is_active:
+                            login(request, access)
+                            return HttpResponseRedirect('/userindex')
+                        else:
+                            return render_to_response('noactive.html', context_instance=RequestContext(request))
+                else:
+                    messages.error(request, "Error: Both passwords must match.")           
+        else:
+            form = UserForm()
     else:
-        form = UserForm()
+        return HttpResponseRedirect('/userindex')
     
     return render_to_response('newuser.html', {'userForm':form}, context_instance=RequestContext(request))
 
 def loginUser(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request.POST)
-        user = request.POST['username']
-        passw = request.POST['password']
-        access = authenticate(username=user, password=passw)
-        if access is not None:
-            if access.is_active:
-                login(request, access)
-                return HttpResponseRedirect('/userindex')
+    if request.user.is_anonymous():
+        if request.method == 'POST':
+            form = AuthenticationForm(request.POST)
+            user = request.POST['username']
+            passw = request.POST['password']
+            access = authenticate(username=user, password=passw)
+            if access is not None:
+                if access.is_active:
+                    login(request, access)
+                    return HttpResponseRedirect('/userindex')
+                else:
+                    return render_to_response('noactive.html', context_instance=RequestContext(request))
             else:
-                return render_to_response('noactive.html', context_instance=RequestContext(request))
+                messages.error(request, "Access Error: User and password do not match or do not exist.")
         else:
-            messages.error(request, "Access Error: User and password do not match or do not exist.")
+            form = AuthenticationForm()
     else:
-        form = AuthenticationForm()
+        return HttpResponseRedirect('/userindex')
     
     return render_to_response('login.html', {'userForm':form}, context_instance=RequestContext(request))
 
