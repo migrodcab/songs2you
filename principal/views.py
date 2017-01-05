@@ -8,7 +8,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from principal.forms import SearchForm
+from principal.forms import SearchForm, UserForm
 from principal.models import Artista, Album, Cancion
 
 from utils import *
@@ -119,13 +119,36 @@ def displayArtist(request,artistId):
 
 def newUser(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserForm(request.POST)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/')
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            repeatPass = form.cleaned_data['repeatPassword']
+            firstName = form.cleaned_data['firstName']
+            lastName = form.cleaned_data['lastName']
+            email = form.cleaned_data['email']
+            gender = form.cleaned_data['gender']
+            
+            if password == repeatPass:
+                user = User.objects.create_user(username=username, password=password)
+                user.first_name = firstName
+                user.last_name = lastName
+                user.email = email
+                user.save()
+                Profile.objects.create(user=user, gender=gender)
+                
+                access = authenticate(username=username, password=password)
+                if access is not None:
+                    if access.is_active:
+                        login(request, access)
+                        return HttpResponseRedirect('/private')
+                    else:
+                        return render_to_response('noactive.html', context_instance=RequestContext(request))
+            else:
+                messages.error(request, "Error: Both passwords must match.")           
     else:
-        form = UserCreationForm()
-        
+        form = UserForm()
+    
     return render_to_response('newuser.html', {'userForm':form}, context_instance=RequestContext(request))
 
 def loginUser(request):

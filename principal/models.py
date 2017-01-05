@@ -1,5 +1,6 @@
 # encoding:utf-8
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Artista(models.Model):
@@ -28,3 +29,11 @@ class Cancion(models.Model):
     
     def __unicode__(self):
         return self.Nombre
+    
+class Profile(models.Model):
+    user = models.ForeignKey(User, unique=True)
+    gender = models.CharField(max_length=10)
+    
+    def __unicode__(self):
+        return self.user.first_name + " " + self.user.last_name
+    

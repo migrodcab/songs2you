@@ -4,6 +4,8 @@
 import os
 PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 
+AUTH_PROFILE_MODULE = "principal.Profile"
+
 # Django settings for songs2you project.
 
 DEBUG = True
@@ -38,7 +40,7 @@ TIME_ZONE = 'Europe/Madrid'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'es-ES'
+LANGUAGE_CODE = 'en-EN'
 
 SITE_ID = 1
 
