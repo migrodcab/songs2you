@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title %} Canciones {% endblock %}
+{% block title %} Albums {% endblock %}
 
 {% block style %}
 	.col-md-4 {
@@ -9,35 +9,27 @@
 {% endblock %}
 
 {% block content %}
-
-	{% if genero == None and playlist == None %}
-		<h1>Generos - Canciones</h1>
+	{% if genre == None %}
+		<h1>Find albums by genre</h1>
 		<div class="row">
-		{% for genero in data %}
-			<div class="col-md-4" onclick="location.href = '/canciones/genero={{genero}}';">
-				<div><h4>{{genero}}</h4></div>
+		{% for genre in data %}
+			<div class="col-md-4" onclick="location.href = '/albums/{{genre}}';">
+				<div><h4>{{genre}}</h4></div>
 			</div>
 		{% endfor %}
 		</div>
 	{% endif %}
 
-	{% if genero != None or playlist != None %}
-		{% if genero != None %}
-			<h1>Genero: {{genero}}</h1>
-		{% endif %}
-		
-		{% if playlist != None %}
-			<h1>Playlist - {{playlist.Profile.user.username}}: {{playlist}}</h1>
-		{% endif %}
-		
+	{% if genre != None %}
+		<h1>Genre: {{genre}}</h1>
 		<div class="row">
-			{% for song in data %}
-				<div class="col-md-4" onclick="loadPlayer('{{song.EnlaceYouTube}}');">
-					<div><img src="{{song.Album.ImagenPortada}}" width="150"/></div>
-					<div><h3>Song: {{song.Nombre}}</h3></div>
-					<div><h4>Album: {{song.Album.Nombre}}</h4></div>
-				</div>
-			{% endfor %}
+			{% for album in data %}
+			<div class="col-md-4" onclick="location.href = '/album/{{album.id}}';">
+				<div><img src="{{album.ImagenPortada}}" width="150"/></div>
+				<div><h3>Album: {{album.Nombre}}</h3></div>
+				<div><h4>Artist: {{album.Artista.Nombre}}</h4></div>
+			</div>
+		{% endfor %}
 		</div>
 	{% endif %}
 

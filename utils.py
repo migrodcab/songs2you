@@ -1,22 +1,22 @@
 from principal.models import Artista, Album, Cancion
 
-def todosLosGeneros(tipo):
-    lista = []
-    if tipo == "cancion":
-        lista = Cancion.objects.all()
+def allGenres(entity):
+    items = []
+    if entity == "song":
+        items = Cancion.objects.all()
         
-    if tipo == "album":
-        lista = Album.objects.all()
+    if entity == "album":
+        items = Album.objects.all()
         
-    if tipo == "artista":
-        lista = Artista.objects.all()
+    if entity == "artist":
+        items = Artista.objects.all()
         
-    generos = []
-    for item in lista:
-        generosAux = item.Generos.split(', ')
-        for genero in generosAux:
-            if generos.__contains__(genero) == False:
-                generos.append(genero)
+    genres = []
+    for item in items:
+        tokenizedGenres = item.Generos.split(', ')
+        for genre in tokenizedGenres:
+            if genres.__contains__(genre) == False:
+                genres.append(genre)
 
-    generos.sort()
-    return generos
+    genres.sort()
+    return genres

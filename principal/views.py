@@ -1,20 +1,17 @@
 #encoding:utf-8
-from django.shortcuts import render_to_response, get_object_or_404, render
-from django.template.context import RequestContext
-from django.http import HttpResponseRedirect
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import HttpResponseRedirect
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template.context import RequestContext
 
 from principal.forms import SearchForm, UserForm, PlaylistForm
-from principal.models import Artista, Album, Cancion, Profile, Playlist
-
+from principal.models import Profile, Playlist
 from utils import *
-
 
 
 def searchForm(request):
@@ -33,22 +30,22 @@ def searchForm(request):
     
     return render_to_response('index.html',{"form":form,"numArtists":numArtists,"numAlbums":numAlbums,"numSongs":numSongs},context_instance=RequestContext(request))
     
-def canciones(request, genero=None, playlist=None):  
+def songs(request, genre=None, playlist=None):  
     page = request.GET.get('page', 1)
     
-    if genero != None:
-        canciones = Cancion.objects.filter(Generos__contains=genero)
-        paginator = Paginator(canciones, 4)
+    if genre != None:
+        songs = Cancion.objects.filter(Generos__contains=genre)
+        paginator = Paginator(songs, 4)
         
     if playlist != None:
         playlist = Playlist.objects.get(Nombre=playlist)
-        canciones = playlist.Canciones.all()
-        paginator = Paginator(canciones, 4)
+        songs = playlist.Canciones.all()
+        paginator = Paginator(songs, 4)
     
-    if genero == None and playlist == None:
-        generos = todosLosGeneros("cancion")
-        paginator = Paginator(generos, 12)
-  
+    if genre == None and playlist == None:
+        genres = allGenres("song")
+        paginator = Paginator(genres, 12)
+    
     try:
         data = paginator.page(page)
     except PageNotAnInteger:
@@ -56,18 +53,17 @@ def canciones(request, genero=None, playlist=None):
     except EmptyPage:
         data = paginator.page(paginator.num_pages)
     
-    return render_to_response('canciones.html',{'data':data, 'genero':genero, 'playlist':playlist},context_instance=RequestContext(request))
+    return render_to_response('songs.html',{'data':data, 'genre':genre, 'playlist':playlist},context_instance=RequestContext(request))
 
-def albumes(request, genero=None):  
+def albums(request, genre=None):  
     page = request.GET.get('page', 1)
     
-    if genero != None:
-        albumes = Album.objects.filter(Generos__contains=genero)
-        paginator = Paginator(albumes, 4)
-    
-    if genero == None:
-        generos = todosLosGeneros("album")
-        paginator = Paginator(generos, 12)
+    if genre != None:
+        albums = Album.objects.filter(Generos__contains=genre)
+        paginator = Paginator(albums, 4)
+    else:
+        genres = allGenres("album")
+        paginator = Paginator(genres, 12)
   
     try:
         data = paginator.page(page)
@@ -76,18 +72,17 @@ def albumes(request, genero=None):
     except EmptyPage:
         data = paginator.page(paginator.num_pages)
     
-    return render_to_response('albumes.html',{'data':data, 'genero':genero},context_instance=RequestContext(request))
+    return render_to_response('albums.html',{'data':data, 'genre':genre},context_instance=RequestContext(request))
 
-def artistas(request, genero=None):  
+def artists(request, genre=None):  
     page = request.GET.get('page', 1)
     
-    if genero != None:
-        artistas = Artista.objects.filter(Generos__contains=genero)
-        paginator = Paginator(artistas, 4)
-    
-    if genero == None:
-        generos = todosLosGeneros("artista")
-        paginator = Paginator(generos, 12)
+    if genre != None:
+        artists = Artista.objects.filter(Generos__contains=genre)
+        paginator = Paginator(artists, 4)
+    else:
+        genres = allGenres("artist")
+        paginator = Paginator(genres, 12)
   
     try:
         data = paginator.page(page)
@@ -96,8 +91,7 @@ def artistas(request, genero=None):
     except EmptyPage:
         data = paginator.page(paginator.num_pages)
     
-    return render_to_response('artistas.html',{'data':data, 'genero':genero},context_instance=RequestContext(request))
-
+    return render_to_response('artists.html',{'data':data, 'genre':genre},context_instance=RequestContext(request))
 
 def index(request):
     return searchForm(request)
@@ -157,7 +151,7 @@ def newUser(request):
                     else:
                         messages.error(request, "Error: Both passwords must match.")
                 else:
-                      messages.error(request, "Error: Username currently in use.") 
+                    messages.error(request, "Error: Username currently in use.") 
         else:
             form = UserForm()
     else:
@@ -228,9 +222,8 @@ def playlists(request, playlist=None):
     page = request.GET.get('page', 1)
     
     if playlist != None:
-        return HttpResponseRedirect('/canciones/playlist='+playlist)
-    
-    if playlist == None:
+        return HttpResponseRedirect('/songs/playlist/'+playlist)
+    else:
         playlists = Playlist.objects.filter(Profile=request.user.get_profile())
         paginator = Paginator(playlists, 6)
         

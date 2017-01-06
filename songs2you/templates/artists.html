@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title %} Albumes {% endblock %}
+{% block title %} Artists {% endblock %}
 
 {% block style %}
 	.col-md-4 {
@@ -9,25 +9,23 @@
 {% endblock %}
 
 {% block content %}
-	{% if genero == None %}
-		<h1>Generos - Albumes</h1>
+	{% if genre == None %}
+		<h1>Find artists by genre</h1>
 		<div class="row">
-		{% for genero in data %}
-			<div class="col-md-4" onclick="location.href = '/albumes/{{genero}}';">
-				<div><h4>{{genero}}</h4></div>
+		{% for genre in data %}
+			<div class="col-md-4" onclick="location.href = '/artists/{{genre}}';">
+				<div><h4>{{genre}}</h4></div>
 			</div>
 		{% endfor %}
 		</div>
 	{% endif %}
 
-	{% if genero != None %}
-		<h1>Genero: {{genero}}</h1>
+	{% if genre != None %}
+		<h1>Genre: {{genre}}</h1>
 		<div class="row">
-			{% for album in data %}
-			<div class="col-md-4" onclick="location.href = '/album/{{album.id}}';">
-				<div><img src="{{album.ImagenPortada}}" width="150"/></div>
-				<div><h3>Album: {{album.Nombre}}</h3></div>
-				<div><h4>Artist: {{album.Artista.Nombre}}</h4></div>
+			{% for artist in data %}
+			<div class="col-md-4" onclick="location.href = '/artist/{{artist.id}}';">
+				<div><h3>Artist: {{artist.Nombre}}</h3></div>
 			</div>
 		{% endfor %}
 		</div>

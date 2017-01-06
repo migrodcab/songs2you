@@ -12,7 +12,7 @@
 	<h1>Playlists - {{user.username}}</h1>
 	<div class="row">
 		{% for list in data %}
-			<div class="col-md-4" onclick="location.href = '/canciones/playlist={{list}}';">
+			<div class="col-md-4" onclick="location.href = '/songs/playlist/{{list}}';">
 				<div><h4>{{list}}</h4></div>
 			</div>
 		{% endfor %}
