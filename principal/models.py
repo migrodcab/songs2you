@@ -37,3 +37,12 @@ class Profile(models.Model):
     def __unicode__(self):
         return self.user.first_name + " " + self.user.last_name
     
+class Playlist(models.Model):
+    Nombre = models.CharField(max_length=50)
+    Profile = models.ForeignKey(Profile)
+    Canciones = models.ManyToManyField(Cancion)
+    
+    def __unicode__(self):
+        return self.Nombre
+    
+    

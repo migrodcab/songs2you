@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+
+{% block title %} Playlists {% endblock %}
+
+{% block style %}
+	.col-md-4 {
+		cursor:pointer;
+	}
+{% endblock %}
+
+{% block content %}
+	<h1>Playlists - {{user.username}}</h1>
+	<div class="row">
+		{% for list in data %}
+			<div class="col-md-4" onclick="location.href = '/canciones/playlist={{list}}';">
+				<div><h4>{{list}}</h4></div>
+			</div>
+		{% endfor %}
+	</div>
+
+{% if data.has_other_pages %}
+  <ul class="pagination">
+    {% if data.has_previous %}
+      <li><a href="?page={{ data.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in data.paginator.page_range %}
+      {% if data.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if data.has_next %}
+      <li><a href="?page={{ data.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+{% endblock %}

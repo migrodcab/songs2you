@@ -10,19 +10,26 @@
 
 {% block content %}
 
-	{% if genero == None %}
+	{% if genero == None and playlist == None %}
 		<h1>Generos - Canciones</h1>
 		<div class="row">
 		{% for genero in data %}
-			<div class="col-md-4" onclick="location.href = '/canciones/{{genero}}';">
+			<div class="col-md-4" onclick="location.href = '/canciones/genero={{genero}}';">
 				<div><h4>{{genero}}</h4></div>
 			</div>
 		{% endfor %}
 		</div>
 	{% endif %}
 
-	{% if genero != None %}
-		<h1>Genero: {{genero}}</h1>
+	{% if genero != None or playlist != None %}
+		{% if genero != None %}
+			<h1>Genero: {{genero}}</h1>
+		{% endif %}
+		
+		{% if playlist != None %}
+			<h1>Playlist - {{playlist.Profile.user.username}}: {{playlist}}</h1>
+		{% endif %}
+		
 		<div class="row">
 			{% for song in data %}
 				<div class="col-md-4" onclick="loadPlayer('{{song.EnlaceYouTube}}');">

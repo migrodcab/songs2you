@@ -10,8 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
 
-from principal.forms import SearchForm, UserForm
-from principal.models import Artista, Album, Cancion, Profile
+from principal.forms import SearchForm, UserForm, PlaylistForm
+from principal.models import Artista, Album, Cancion, Profile, Playlist
 
 from utils import *
 
@@ -33,14 +33,19 @@ def searchForm(request):
     
     return render_to_response('index.html',{"form":form,"numArtists":numArtists,"numAlbums":numAlbums,"numSongs":numSongs},context_instance=RequestContext(request))
     
-def canciones(request, genero=None):  
+def canciones(request, genero=None, playlist=None):  
     page = request.GET.get('page', 1)
     
     if genero != None:
         canciones = Cancion.objects.filter(Generos__contains=genero)
         paginator = Paginator(canciones, 4)
+        
+    if playlist != None:
+        playlist = Playlist.objects.get(Nombre=playlist)
+        canciones = playlist.Canciones.all()
+        paginator = Paginator(canciones, 4)
     
-    if genero == None:
+    if genero == None and playlist == None:
         generos = todosLosGeneros("cancion")
         paginator = Paginator(generos, 12)
   
@@ -51,7 +56,7 @@ def canciones(request, genero=None):
     except EmptyPage:
         data = paginator.page(paginator.num_pages)
     
-    return render_to_response('canciones.html',{'data':data, 'genero':genero},context_instance=RequestContext(request))
+    return render_to_response('canciones.html',{'data':data, 'genero':genero, 'playlist':playlist},context_instance=RequestContext(request))
 
 def albumes(request, genero=None):  
     page = request.GET.get('page', 1)
@@ -187,8 +192,55 @@ def userIndex(request):
     user = request.user
     return render_to_response('userindex.html', {'user':user}, context_instance=RequestContext(request))
 
-@login_required(login_url='/login')
 def logoutUser(request):
-    logout(request)
-    return HttpResponseRedirect('/')
+    if request.user.is_authenticated():
+        logout(request)
+        return HttpResponseRedirect('/')
+    else:
+        return HttpResponseRedirect('/')
 
+@login_required(login_url='/login')
+def newPlaylist(request):
+    if request.method == 'POST':
+        form = PlaylistForm(request.POST, request.FILES)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            songs = form.cleaned_data['songs']
+            profile = request.user.get_profile()
+            
+            playlist = Playlist.objects.get(Nombre=name)
+            if playlist == None:
+                playlist = Playlist.objects.create(Nombre=name,Profile=profile)
+            
+                for song in songs:
+                    playlist.Canciones.add(Cancion.objects.get(Nombre=song))
+            
+                playlist.save()
+                return HttpResponseRedirect('/playlists')
+            else:
+                messages.error(request, "Error: You don't have two playlists with the same name.")
+    else:
+        form = PlaylistForm()
+    return render_to_response('playlistform.html', {'playlistForm':form}, context_instance=RequestContext(request))
+
+@login_required(login_url='/login')
+def playlists(request, playlist=None):  
+    page = request.GET.get('page', 1)
+    
+    if playlist != None:
+        return HttpResponseRedirect('/canciones/playlist='+playlist)
+    
+    if playlist == None:
+        playlists = Playlist.objects.filter(Profile=request.user.get_profile())
+        paginator = Paginator(playlists, 6)
+        
+    user = request.user
+  
+    try:
+        data = paginator.page(page)
+    except PageNotAnInteger:
+        data = paginator.page(1)
+    except EmptyPage:
+        data = paginator.page(paginator.num_pages)
+    
+    return render_to_response('playlists.html',{'data':data, 'user':user},context_instance=RequestContext(request))
