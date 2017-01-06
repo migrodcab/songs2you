@@ -4,6 +4,8 @@
 	<meta charset="utf-8">
 	<title>songs2you - {% block title %}{% endblock %}</title>
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel='stylesheet' href='{{STATIC_URL}}css/sticky-footer.css'>
+	<link rel='stylesheet' href='{{STATIC_URL}}css/navbar-fixed-top.css'>
 	<link rel='stylesheet' href='{{STATIC_URL}}css/bootstrap.min.css'>
 	<link rel='stylesheet' href='{{STATIC_URL}}css/bootstrap-theme.min.css'>
 	<script src=''{{STATIC_URL}}js/bootstrap.min.js'></script>
@@ -14,36 +16,33 @@
 	</style>
 </head>
 <body>
-	<!-- Static navbar -->
-	<header>
-	    <nav class="navbar navbar-static-top navbar-dark">
-	      <div class="container">
-	        <div class="navbar-header">
-	          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-	            <span class="sr-only">Toggle navigation</span>
-	            <span class="icon-bar"></span>
-	            <span class="icon-bar"></span>
-	            <span class="icon-bar"></span>
-	          </button>
-	          <a class="navbar-brand" href="/">songs2you</a>
-	        </div>
-	        <div id="navbar" class="navbar-collapse collapse">
-	          <ul class="nav navbar-nav">
-	        </div><!--/.nav-collapse -->
-	      </div>
-	    </nav>
-	</header>
-	
-    <!-- Begin page content -->
-    	<nav>
-		<ul>
-			<li><a href='/'>Home</a></li>
+	<!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">songs2you</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href='/'>Home</a></li>
 			<li><a href='/songs'>Find songs</a></li>
 			<li><a href='/artists'>Find artists</a></li>
 			<li><a href='/albums'>Find albums</a></li>
-		</ul>
-	</nav>
-    
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Login</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+	
+    <!-- Begin page content -->
     <div class="container">
     	{% if numArtists %}
     		<p>We currently have {{numArtists}} artists, {{numAlbums}} albums and {{numSongs}} songs registered!</p>
