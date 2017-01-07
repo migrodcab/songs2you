@@ -19,11 +19,11 @@ from bs4 import BeautifulSoup
 
 __author__ = "Carlos Alberto Mata Gil"
 
-__version__ = "1.0"
+__version__ = "1.1"
 __email__ = "carmatgil@alum.us.es"
 __status__ = "Production"
 
-def scrap():
+def scrap(allowedGenres=None):
     
     YouTubeAPIKey = ""
     
@@ -56,12 +56,11 @@ def scrap():
     
     print "## [DONE] (" + str(round(time.time() - start_time,3)) + " secs) Searching for Genres: " + str(len(genres)) + " genres found."
     
-    allowedGenres = ("Pop/Rock")
     for genre in genres:
         genreName = genre("h2")[0]("a")[0].getText()
         genreUrl = genre("a")[0].get("href")
         
-        if genreName not in allowedGenres:
+        if type(allowedGenres) != type(None) and genreName not in allowedGenres:
             print "## [INFO] Skipped genre '" + genreName + "'"
             continue
         
@@ -129,7 +128,7 @@ def scrap():
                 artistList.append('?')
             
             artistsWriter.writerow(artistList)
-            print "## [STARTED] Analyzing artist '" + artistList[1] + "'"
+            print "## [INFO] Analyzing artist '" + artistList[1] + "'"
             
             req = urllib2.Request("http://www.allmusic.com/artist/MN"+artistId+"/discography", headers=hdr)
             html = urllib2.urlopen(req)
@@ -261,15 +260,18 @@ def scrap():
                     else:
                         songList.append('')
                     
-                    req = urllib2.Request("https://www.googleapis.com/youtube/v3/search?part=snippet&q="+songList[3].replace(" ","+")+"&type=video&key="+YouTubeAPIKey, headers=hdr)
-                    response = urllib2.urlopen(req)
-                    html = response.read()
-                    songYouTubeURL = re.findall(r'"videoId": "(.+)"',html)[0]
-                    songList.append(songYouTubeURL)
+                    try:
+                        req = urllib2.Request("https://www.googleapis.com/youtube/v3/search?part=snippet&q="+songList[3].replace(" ","+")+"+"+artistList[1].replace(" ","+")+"&type=video&key="+YouTubeAPIKey, headers=hdr)
+                        response = urllib2.urlopen(req)
+                        html = response.read()
+                        songYouTubeURL = re.findall(r'"videoId": "(.+)"',html)[0]
+                        songList.append(songYouTubeURL)
+                    except:
+                        songList.append("?")
                     
                     songsWriter.writerow(songList)
                      
-                if index == 2: # It sets a limit of 10 albums per artist due to a huge amount of albums and songs of some artists
+                if index == 2: # It sets a limit of 3 albums per artist due to a huge amount of albums and songs of some artists
                     break
         
         print "## [DONE] (" + str(round(time.time() - start_time,3)) + " secs) Analyzing genre '" + genreName + "'"
@@ -281,4 +283,5 @@ def scrap():
     print "### [DONE] (" + str(round(time.time() - start_total_time,3)) + " secs) Scrapping Artists, Albums and Songs from AllMusic.com"
     
 if __name__ == '__main__':
-    scrap()
+    allowedGenres = ("Pop/Rock")
+    scrap(allowedGenres)
