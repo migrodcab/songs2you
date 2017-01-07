@@ -17,6 +17,7 @@
 	<div class="list-group">
 		{% for song in songs %}
 			<a class="list-group-item" onclick="loadPlayer('{{song.EnlaceYouTube}}');"><i class="material-icons">play_circle_outline</i> {{song.Nombre}}</a>
+			<a href='/playlist/addsong/{{song.id}}'>Add to Playlist!</a>
 		{% endfor %}
 	</div>
 {% endblock %}
