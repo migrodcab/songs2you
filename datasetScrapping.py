@@ -24,8 +24,8 @@ __email__ = "carmatgil@alum.us.es"
 __status__ = "Production"
 
 def scrap(allowedGenres=None):
-    
-    YouTubeAPIKey = ""
+
+    YouTubeAPIKey = "AIzaSyAfGR_cKX3hrd59oLofgLPT9dx9_wy7wzM"
     
     print "### [STARTED] Scrapping Artists, Albums and Songs from AllMusic.com"
     start_total_time = time.time()
@@ -283,5 +283,5 @@ def scrap(allowedGenres=None):
     print "### [DONE] (" + str(round(time.time() - start_total_time,3)) + " secs) Scrapping Artists, Albums and Songs from AllMusic.com"
     
 if __name__ == '__main__':
-    allowedGenres = ("Pop/Rock")
+    allowedGenres = ("Vocal")
     scrap(allowedGenres)

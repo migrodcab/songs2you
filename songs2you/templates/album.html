@@ -15,8 +15,8 @@
 			<img src="{{album.ImagenPortada}}" width="200"/>
 		</div>
 		<div class="col-md-3">
-			<h3>{{album.Nombre}} ({{album.FechaPublicacion|date:"Y"}})</h3>
-			<h4>{{album.Artista.Nombre}}</h4>
+			<h3>{{album.Nombre}} {% if album.FechaPublicacion != null %} ({{album.FechaPublicacion|date:"Y"}}) {% endif %}</h3>
+			<h4><a style="text-decoration:none; color:black;" href="/artist/{{album.Artista.id}}"/>{{album.Artista.Nombre}}</a></h4>
 		</div>
 	</div>
 
