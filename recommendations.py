@@ -100,6 +100,8 @@ def getRecommendations(artistId,num,metric):
     artists_tags = getArtistContent()
     user_preferences = artists_tags[int(artistId)]
     
+    del artists_tags[int(artistId)]
+    
     similarity = {}
     for i,key in enumerate(artists_tags.keys()):
         if metric == 'SimpleApproachMetric':

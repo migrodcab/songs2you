@@ -111,7 +111,7 @@ def displayAlbum(request,albumId):
 def displayArtist(request,artistId):
     artist = get_object_or_404(Artista, pk=artistId)
     albums = Album.objects.filter(Artista=artist)
-    artist_recommendations = recommendations.getRecommendations(artistId, 5, "TF-IDF")
+    artist_recommendations = recommendations.getRecommendations(artistId, 3, "TF-IDF")
     
     recommended_artists = []
     for recommendation in artist_recommendations:
