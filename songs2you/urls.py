@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     url(r'^logout/$','principal.views.logoutUser'),
     url(r'^playlist/$','principal.views.playlists'),
     url(r'^playlist/new/$','principal.views.newPlaylist'),
+    url(r'^playlist/addsong/(?P<songId>\d+)$','principal.views.addSongToPlaylist'),
     url(r'^$','principal.views.index'),
     url(r'^media/(?P<path>.*)$','django.views.static.serve',
         {'document_root':settings.MEDIA_ROOT,}
