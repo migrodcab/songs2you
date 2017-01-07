@@ -1,8 +1,8 @@
 #encoding:utf-8
 from django import forms
 from django.forms.models import ModelForm
+from django.contrib.auth.models import User
 from principal.models import Playlist, Cancion
-
 
 class SearchForm(forms.Form):
     criteria = forms.CharField(label="Search artists, albums or songs")
@@ -26,3 +26,20 @@ class PlaylistForm(forms.Form):
     
     name = forms.CharField(max_length=100, label="Name")
     songs = forms.MultipleChoiceField(choices=fields, label="Songs")
+            
+def Make_AddSongToPlaylistForm(userId=None,post=None):
+    fields = []
+    if userId != None:
+        profile = User.objects.get(id=userId).get_profile()
+        for playlist in profile.playlist_set.all():
+            fields.append((playlist, playlist.Nombre))
+        fields = tuple(fields)
+    
+    class AddSongToPlaylistForm(forms.Form):
+            playlists = forms.MultipleChoiceField(choices=fields, label="Playlists")
+    
+    if post != None:
+        return AddSongToPlaylistForm(post)
+    
+    if userId != None:
+        return AddSongToPlaylistForm()

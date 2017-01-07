@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 
-from principal.forms import SearchForm, UserForm, PlaylistForm
+from principal.forms import SearchForm, UserForm, PlaylistForm, Make_AddSongToPlaylistForm
 from principal.models import Profile, Playlist
 from utils import *
 
@@ -202,15 +202,15 @@ def newPlaylist(request):
             songs = form.cleaned_data['songs']
             profile = request.user.get_profile()
             
-            playlist = Playlist.objects.get(Nombre=name)
-            if playlist == None:
+            playlists = Playlist.objects.filter(Nombre=name)
+            if len(playlists) == 0:
                 playlist = Playlist.objects.create(Nombre=name,Profile=profile)
             
                 for song in songs:
                     playlist.Canciones.add(Cancion.objects.get(Nombre=song))
             
                 playlist.save()
-                return HttpResponseRedirect('/playlists')
+                return HttpResponseRedirect('/playlist')
             else:
                 messages.error(request, "Error: You don't have two playlists with the same name.")
     else:
@@ -237,3 +237,21 @@ def playlists(request, playlist=None):
         data = paginator.page(paginator.num_pages)
     
     return render_to_response('playlists.html',{'data':data, 'user':user},context_instance=RequestContext(request))
+
+@login_required(login_url='/login')
+def addSongToPlaylist(request, songId):
+    id = request.user.id
+    if request.method == 'POST':
+        form = Make_AddSongToPlaylistForm(userId=id, post=request.POST)
+        if form.is_valid():
+            playlists = form.cleaned_data['playlists']
+            song = Cancion.objects.get(id=str(songId))
+            for list in playlists:
+                playlist = Playlist.objects.get(Nombre=list)
+                playlist.Canciones.add(song)
+                playlist.save()
+            return HttpResponseRedirect('/playlist')
+    else:
+        form = Make_AddSongToPlaylistForm(userId=id)
+    
+    return render_to_response('addsongtoplaylistform.html', {'playlistForm':form, 'songId':songId}, context_instance=RequestContext(request))
