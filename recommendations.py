@@ -98,7 +98,7 @@ def getTFIDF(artists_tags,user_preferences,key,idf):
 
 def getRecommendations(artistId,num,metric):
     artists_tags = getArtistContent()
-    user_preferences = artists_tags[artistId]
+    user_preferences = artists_tags[int(artistId)]
     
     similarity = {}
     for i,key in enumerate(artists_tags.keys()):
@@ -118,4 +118,4 @@ def getRecommendations(artistId,num,metric):
     return sorted_similarity[:num]
 
 if __name__ == "__main__":
-    print getRecommendations(467203, 5, "TF-IDF")
+    print getRecommendations(945269, 5, "TF-IDF")
