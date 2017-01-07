@@ -5,20 +5,153 @@ Created on 30/12/2016
 
 @author: Javier Garcia (javgarcal@alum.us.es)
 '''
-import datetime
+
+import datetime, re
 
 from principal.models import Artista, Album, Cancion
 
+import codecs, sys, sqlite3, csv
 
-arctic_monkeys = Artista.objects.create(Nombre="Arctic Monkeys",Miembros="Alex Turner, Matt Helders, Jamie Cook, Nick O'Malley, Andy Nicholson, Glyn Jones",Generos="Indie rock, Garage rock, Post punk revival, Rock psicodelico")
-am = Album.objects.create(Nombre="AM",FechaPublicacion=datetime.datetime.strptime("09-09-2013", "%d-%m-%Y"),Generos="Rock, Indie rock, Britpop, Rock psicodelico, Garage rock, Hard rock",ImagenPortada="https://images-na.ssl-images-amazon.com/images/I/71hEtk3aCpL._SL1500_.jpg",Artista=arctic_monkeys)
-do_i_wanna_know = Cancion.objects.create(Nombre="Do I Wanna Know?",EnlaceYouTube="bpOSxM0rNPM",Album=am)
-r_u_mine = Cancion.objects.create(Nombre="R U Mine?",EnlaceYouTube="VQH8ZTgna3Q",Album=am)
-one_for_the_road = Cancion.objects.create(Nombre="One For The Road",EnlaceYouTube="qN7gSMPQFss",Album=am)
-suck_it_and_see = Album.objects.create(Nombre="Suck It And See",FechaPublicacion=datetime.datetime.strptime("06-06-2011", "%d-%m-%Y"),Generos="Indie rock, Pop, Rock alternativo, Rock psicodelico",ImagenPortada="http://2.bp.blogspot.com/-npTe8vMA_s4/Ub-JczFTjSI/AAAAAAAABVY/X_RhPz-lvY8/s1600/Arctic+Monkeys+-+Suck+It+And+See.jpg",Artista=arctic_monkeys)
-shes_thunderstorms = Cancion.objects.create(Nombre="She's Thunderstorms",EnlaceYouTube="ZQTsKxd0_1k",Album=suck_it_and_see)
-black_treacle = Cancion.objects.create(Nombre="Black Treacle",EnlaceYouTube="1wznj4lD1Bs",Album=suck_it_and_see)
+from django.db.transaction import commit_on_success
 
-the_kooks = Artista.objects.create(Nombre="The Kooks",Miembros="Luke Pritchard, Hugh Harris, Max Rafferty, Paul Garred, Peter Denton, Dan Logan",Generos="Indie rock, Post-britpop, Rock alternativo, Indie pop, Post punk revival")
-inside_in_inside_out = Album.objects.create(Nombre="Inside In/Inside Out",FechaPublicacion=datetime.datetime.strptime("26-01-2006", "%d-%m-%Y"),Generos="Indie rock, Britpop, Rock alternativo, Post-britpop",ImagenPortada="http://www.elrocknomuere.com/blog/img/albums/inside+ininside+out.jpg",Artista=the_kooks)
-seaside = Cancion.objects.create(Nombre="Seaside",EnlaceYouTube="7_RZLAxsa8Q",Album=inside_in_inside_out)
+from principal.models import *
+
+reload(sys)
+sys.setdefaultencoding('UTF8')  # @UndefinedVariable
+
+def load(detailed):
+    
+    print "---------------------------------------------------------"
+    print "                POPULATE DATABASE 1.0                    "
+    print "---------------------------------------------------------"
+    print ""
+    
+    @commit_on_success
+    def loadArtists():
+        
+        print "[INFO] Loading artists..."
+        
+        num_lines = sum(1 for line in open('dataset/artists.csv')) #@UnusedVariable
+        
+        print "[INFO] Detected " + str(num_lines) + " items"
+        
+        with codecs.open('dataset/artists.csv', 'r', encoding='iso-8859-15') as csvfile:
+            reader = csv.reader(csvfile, delimiter=';')
+            # (id,name,members,genre,styles,photo)
+            for row in reader:
+                try:
+                    Artista.objects.create(id=row[0],Nombre=row[1],Miembros=row[2],Generos=row[3],Estilos=row[4],Imagen=row[5])
+                except:
+                    if detailed:
+                        print "[WARNING] The artist [" + ';'.join(row) + "] has not been considered."
+                        
+        print "[INFO] Artists loaded!"
+        
+    @commit_on_success
+    def loadAlbums():
+        
+        print "[INFO] Loading albums..."
+        
+        num_lines = sum(1 for line in open('dataset/albums.csv')) #@UnusedVariable
+        
+        print "[INFO] Detected " + str(num_lines) + " items"
+        
+        conn = sqlite3.connect('sqlite.db')
+        conn.text_factory = str
+        
+        with codecs.open('dataset/albums.csv', 'r', encoding='iso-8859-15') as csvfile:
+            reader = csv.reader(csvfile, delimiter=';')
+            # (id,name,label,genre,styles,release_date,cover_image,duration)
+            for row in reader:
+                try:
+                    artistId = row[0]
+                    albumId = row[1]
+                    name = row[2]
+                    label = row[3]
+                    genre = row[4]
+                    styles = row[5]
+                    try:
+                        if len(row[6])==4:
+                            releaseDateFormat = "%Y"
+                        elif re.match(r'\w+ \d+, \d{4}',row[6]):
+                            releaseDateFormat = "%B %d, %Y"
+                        else:
+                            releaseDateFormat = "%B, %Y"
+                        release_date = datetime.datetime.strptime(row[6], releaseDateFormat)
+                    except:
+                        if detailed:
+                            print "[WARNING] The release date of album '" + name + "' has failed when casting."
+                        release_date = None
+                    cover_image = row[7]
+                    try:
+                        if row[8].count(":")==2:
+                            durationFormat = "%H:%M:%S"
+                        else:
+                            durationFormat = "%M:%S"
+                        duration = datetime.datetime.strptime(row[8], durationFormat)
+                    except:
+                        if detailed and len(row[8])>0:
+                            print "[WARNING] The duration of album '" + name + "' has failed when casting."
+                        duration = None
+                    
+                    conn.execute("INSERT INTO principal_album (id,Nombre,Etiqueta,Generos,Estilos,FechaPublicacion,ImagenPortada,Duracion,Artista_id) VALUES (?,?,?,?,?,?,?,?,?)", (albumId,name,label,genre,styles,release_date,cover_image,duration,artistId))
+                except:
+                    if detailed:
+                        print "[WARNING] The album [" + ';'.join(row) + "] has not been considered."
+        
+        conn.commit()
+        conn.close()
+                        
+        print "[INFO] Albums loaded!"
+        
+    @commit_on_success
+    def loadSongs():
+        
+        print "[INFO] Loading songs..."
+        
+        num_lines = sum(1 for line in open('dataset/songs.csv')) #@UnusedVariable
+        
+        print "[INFO] Detected " + str(num_lines) + " items"
+        
+        conn = sqlite3.connect('sqlite.db')
+        conn.text_factory = str
+        
+        with codecs.open('dataset/songs.csv', 'r', encoding='iso-8859-15') as csvfile:
+            reader = csv.reader(csvfile, delimiter=';')
+            # (id,track_number,name,duration,genre,styles,video_id)
+            for row in reader:
+                try:
+                    albumId = row[0]
+                    songId = row[1]
+                    track_number = row[2]
+                    name = row[3]
+                    try:
+                        if row[4].count(":")==2:
+                            durationFormat = "%H:%M:%S"
+                        else:
+                            durationFormat = "%M:%S"
+                        duration = datetime.datetime.strptime(row[4], durationFormat)
+                    except:
+                        if detailed and len(row[4])>0:
+                            print "[WARNING] The duration of song '" + name + "' has failed when casting."
+                        duration = None
+                    genre = row[5]
+                    styles = row[6]
+                    video_id = row[7]
+                    
+                    conn.execute("INSERT INTO principal_cancion (id,NumeroCancion,Nombre,EnlaceYouTube,Generos,Estilos,Duracion,Album_id) VALUES (?,?,?,?,?,?,?,?)", (songId,track_number,name,video_id,genre,styles,duration,albumId))
+                except:
+                    if detailed:
+                        print "[WARNING] The song [" + ';'.join(row) + "] has not been considered."
+        
+        conn.commit()
+        conn.close()
+                        
+        print "[INFO] Songs loaded!"
+        
+    loadArtists()
+    loadAlbums()
+    loadSongs()
+
+if __name__ == "__main__":
+    load(True)
