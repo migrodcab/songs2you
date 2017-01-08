@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+
+{% block title %} New Playlist {% endblock %}
+
+{% block content %}
+	<h1>Create a new playlist</h1>
+	
+	<form id='form' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
+		<table>{{playlistForm}}</table>
+		<p><input type='submit' class='btn btn-primary' value='Confirm'/></p>
+	</form>
+	
+	{% if messages %}
+		<ul class="messages">
+    	{% for message in messages %}
+    		<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    	{% endfor %}
+		</ul>
+	{% endif %}
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% block title %} Albums {% endblock %}
+
+{% block style %}
+	.col-md-4 {
+		cursor:pointer;
+	}
+{% endblock %}
+
+{% block content %}
+	{% if genre == None %}
+		<h1>Find albums by genre</h1>
+		<div class="row">
+		{% for genre in data %}
+			<div class="col-md-4" onclick="location.href = '/albums/{{genre}}';">
+				<div><h4>{{genre}}</h4></div>
+			</div>
+		{% endfor %}
+		</div>
+	{% endif %}
+
+	{% if genre != None %}
+		<h1>Genre: {{genre}}</h1>
+		<div class="row">
+			{% for album in data %}
+			<div class="col-md-4" onclick="location.href = '/album/{{album.id}}';">
+				<div><img src="{{album.ImagenPortada}}" width="150"/></div>
+				<div><h3>Album: {{album.Nombre}}</h3></div>
+				<div><h4>Artist: {{album.Artista.Nombre}}</h4></div>
+			</div>
+		{% endfor %}
+		</div>
+	{% endif %}
+
+{% include 'pagination.html' %}
+
+{% endblock %}

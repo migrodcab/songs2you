@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+
+{% block title %} New User {% endblock %}
+
+{% block content %}
+	<h1>Register a new user</h1>
+	
+	<form id='form' method='post' action=''>{% csrf_token %}
+		<table>{{userForm}}</table>
+		<p><input type='submit' class='btn btn-primary' value='Register'/></p>
+	</form>
+	
+	{% if messages %}
+		<ul class="messages">
+    	{% for message in messages %}
+    		<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    	{% endfor %}
+		</ul>
+	{% endif %}
+{% endblock %}

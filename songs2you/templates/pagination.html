@@ -1,0 +1,49 @@
+{% if data.has_other_pages %}
+  <ul class="pagination">
+    {% if data.has_previous %}
+   	  <li><a href="?page=1">First</a></li>
+      <li><a href="?page={{ data.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>First</span></li>
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% if data1 != None %}
+    	<li><a href="?page={{ data1 }}">{{ data1 }}</a></li>
+    {% endif %}
+    {% if data2 != None %}
+    	<li><a href="?page={{ data2 }}">{{ data2 }}</a></li>
+    {% endif %}
+    {% if data3 != None %}
+    	<li><a href="?page={{ data3 }}">{{ data3 }}</a></li>
+    {% endif %}
+    {% if data4 != None %}
+    	<li><a href="?page={{ data4 }}">{{ data4 }}</a></li>
+    {% endif %}
+    {% if data5 != None %}
+    	<li><a href="?page={{ data5 }}">{{ data5 }}</a></li>
+    {% endif %}
+    <li class="active"><span>{{ data.number }} <span class="sr-only">(current)</span></span></li>
+    {% if data6 != None %}
+    	<li><a href="?page={{ data6 }}">{{ data6 }}</a></li>
+    {% endif %}
+    {% if data7 != None %}
+    	<li><a href="?page={{ data7 }}">{{ data7 }}</a></li>
+    {% endif %}
+    {% if data8 != None %}
+    	<li><a href="?page={{ data8 }}">{{ data8 }}</a></li>
+    {% endif %}
+    {% if data9 != None %}
+    	<li><a href="?page={{ data9 }}">{{ data9 }}</a></li>
+    {% endif %}
+    {% if data10 != None %}
+    	<li><a href="?page={{ data10 }}">{{ data10 }}</a></li>
+    {% endif %}
+    {% if data.has_next %}
+      <li><a href="?page={{ data.next_page_number }}">&raquo;</a></li>
+      <li><a href="?page={{ data.paginator.num_pages }}">Last</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+      <li class="disabled"><span>Last</span></li>
+    {% endif %}
+  </ul>
+{% endif %}

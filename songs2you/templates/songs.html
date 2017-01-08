@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+
+{% block title %} Songs {% endblock %}
+
+{% block style %}
+	.col-md-4 {
+		cursor:pointer;
+	}
+{% endblock %}
+
+{% block content %}
+
+	{% if genre == None and playlist == None %}
+		<h1>Find songs by genre</h1>
+		<div class="row">
+		{% for genre in data %}
+			<div class="col-md-4" onclick="location.href = '/songs/genre/{{genre}}';">
+				{% if genre == "" %}
+					<div><h4>Others</h4></div>
+				{% else %}
+					<div><h4>{{genre}}</h4></div>
+				{% endif %}
+			</div>
+		{% endfor %}
+		</div>
+	{% endif %}
+
+	{% if genre != None or playlist != None %}
+		{% if genre != None %}
+			<h1>Genre: {{genre}}</h1>
+		{% endif %}
+		
+		{% if playlist != None %}
+			<h1>Playlist - {{playlist.Profile.user.username}}: {{playlist}}</h1>
+		{% endif %}
+		
+		<div class="row">
+			{% for song in data %}
+				<div class="col-md-4" onclick="loadPlayer('{{song.EnlaceYouTube}}');">
+					<div><img src="{{song.Album.ImagenPortada}}" width="150"/></div>
+					<div><h3>Song: {{song.Nombre}}</h3></div>
+					<div><h4>Album: {{song.Album.Nombre}}</h4></div>
+					{% if user != None %}
+						<a href='/playlist/addsong/{{song.id}}'>Add to Playlist!</a>
+					{% endif %}
+				</div>
+			{% endfor %}
+		</div>
+	{% endif %}
+
+{% include 'pagination.html' %}
+
+{% endblock %}

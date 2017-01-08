@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block title %} Playlists {% endblock %}
+
+{% block style %}
+	.col-md-4 {
+		cursor:pointer;
+	}
+{% endblock %}
+
+{% block content %}
+	<h1>Playlists - {{userView.user.username}}</h1>
+	<div class="row">
+		{% for list in data %}
+			<div class="col-md-4" onclick="location.href = '/songs/playlist/{{list}}';">
+				<div><h4>{{list}}</h4></div>
+			</div>
+		{% endfor %}
+	</div>
+
+{% include 'pagination.html' %}
+
+{% endblock %}

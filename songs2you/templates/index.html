@@ -2,10 +2,42 @@
 
 {% block title %} index {% endblock %}
 
-{% block header %}
-	<h1>songs2you</h1>
+{% block style %}
+	.col-md-4 {
+		cursor:pointer;
+	}
 {% endblock %}
 
 {% block content %}
-	<p>Welcome!</p>
+	<div class="row">
+		{% for song in songs %}
+			<div class="col-md-4" onclick="loadPlayer('{{song.EnlaceYouTube}}');">
+				<div><img src="{{song.Album.ImagenPortada}}" width="150"/></div>
+				<div><h3>Song: {{song.Nombre}}</h3></div>
+				<div><h4>Album: {{song.Album.Nombre}}</h4></div>
+				{% if user != None %}
+					<a href='/playlist/addsong/{{song.id}}'>Add to Playlist!</a>
+				{% endif %}
+			</div>
+		{% endfor %}
+	</div>
+	
+	<div class="row">
+		{% for artist in artists %}
+			<div class="col-md-4" onclick="location.href = '/artist/{{artist.id}}';">
+				<div><h3>Artist: {{artist.Nombre}}</h3></div>
+			</div>
+		{% endfor %}
+	</div>
+	
+	<div class="row">
+		{% for album in albums %}
+			<div class="col-md-4" onclick="location.href = '/album/{{album.id}}';">
+				<div><img src="{{album.ImagenPortada}}" width="150"/></div>
+				<div><h3>Album: {{album.Nombre}}</h3></div>
+				<div><h4>Artist: {{album.Artista.Nombre}}</h4></div>
+			</div>
+		{% endfor %}
+	</div>
+	
 {% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block title %} Users {% endblock %}
+
+{% block style %}
+	.col-md-4 {
+		cursor:pointer;
+	}
+{% endblock %}
+
+{% block content %}
+	<h1>Users:</h1>
+	<div class="row">
+	{% for userView in data %}
+		<div class="col-md-4" onclick="location.href = '/playlist/userId={{userView.id}}';">
+			<div><h3>{{userView.user.first_name}} {{userView.user.last_name}} - ({{userView.user.username}})</h3></div>
+		</div>
+	{% endfor %}
+	</div>
+
+{% include 'pagination.html' %}
+
+{% endblock %}

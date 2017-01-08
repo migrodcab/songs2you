@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+{% block title %} Welcome {% endblock %}
+
+{% block content %}
+	<h1>Welcome</h1>
+	
+	<p>Welcome to songs2you {{user.username}}!!</p>
+	
+	<ul>
+        <li><a href="/playlist">Your playlists</a></li>
+        <li><a href="/playlist/new">Create a new playlist</a></li>
+        <li><a href="/users">View other users' playlists</a></li>
+	</ul>
+{% endblock %}
