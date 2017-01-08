@@ -21,6 +21,7 @@ except:
     print "### [INFO] Skipping finish sound notification: Couldn't import 'winsound' module"
 
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 
 __author__ = "Carlos Alberto Mata Gil"
@@ -411,7 +412,7 @@ def generateReadmeFile(dataStatistics):
     """Generates a README.txt file with information about the dataset .csv files
     
     This function generates a README.txt on dataset folder in which it is
-    explained where were all data retreived from and what's the meaning of
+    explained where were all data retrieved from and what's the meaning of
     each column for each .csv file.
     
     Args:
@@ -432,14 +433,14 @@ dataset
 Version
 -------
 
-Version {version} (2017-01-08)
+Version {version} ({date})
 
 -----------
 Description
 -----------
 
     This dataset contains music artists, albums and songs information 
-    retreived from using web scraping on http://www.allmusic.com
+    retrieved from performing web scraping on http://www.allmusic.com
 
     The dataset was created for a college work for the subject
     'Acceso Inteligente a la Información' of the department
@@ -505,7 +506,8 @@ Data format
         "numberOfArtists": dataStatistics[1],
         "numberOfAlbums": dataStatistics[2],
         "numberOfSongs": dataStatistics[3],
-        "version": __version__
+        "version": __version__,
+        "date": datetime.now().strftime('%Y-%m-%d')
     }
     
     readmeFile.write(readmeContent.format(**context))

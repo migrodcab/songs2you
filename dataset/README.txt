@@ -14,7 +14,7 @@ Description
 -----------
 
     This dataset contains music artists, albums and songs information 
-    retreived from using web scraping on http://www.allmusic.com
+    retrieved from performing web scraping on http://www.allmusic.com
 
     The dataset was created for a college work for the subject
     'Acceso Inteligente a la Información' of the department
