@@ -12,6 +12,7 @@ from django.template.context import RequestContext
 from principal.forms import SearchForm, UserForm, PlaylistForm, Make_AddSongToPlaylistForm
 from principal.models import Profile, Playlist
 from utils import *
+import recommendations
 
 
 def searchForm(request):
@@ -157,6 +158,11 @@ def displayAlbum(request,albumId):
 def displayArtist(request,artistId):
     artist = get_object_or_404(Artista, pk=artistId)
     albums = Album.objects.filter(Artista=artist)
+    artist_recommendations = recommendations.getRecommendations(artistId, 3, "TF-IDF")
+    
+    recommended_artists = []
+    for recommendation in artist_recommendations:
+        recommended_artists.append(Artista.objects.get(id=recommendation[0]))
     
     if request.method=='POST':
         return searchForm(request)
@@ -168,7 +174,7 @@ def displayArtist(request,artistId):
     else:
         user = None
     
-    return render_to_response('artist.html',{'form':form,'artist':artist,'albums':albums, 'user':user},context_instance=RequestContext(request))
+    return render_to_response('artist.html',{'form':form,'artist':artist,'albums':albums,'recommended_artists':recommended_artists, 'user':user},context_instance=RequestContext(request))
 
 def newUser(request):
     if request.user.is_anonymous():
