@@ -20,8 +20,18 @@
 		{% for album in albums %}
 			<div class="col-md-4" onclick="location.href = '/album/{{album.id}}';">
 				<div><img src="{{album.ImagenPortada}}" width="150"/></div>
-				<div><h3>{{album.Nombre}} ({{album.FechaPublicacion|date:"Y"}})</h3></div>
+				<div><h3>{{album.Nombre}} {% if album.FechaPublicacion != null %} ({{album.FechaPublicacion|date:"Y"}}) {% endif %}</h3></div>
 			</div>
 		{% endfor %}
 	</div>
+	
+	<hr>
+	
+	<h3>You may also like...</h3>
+	{% for recommended_artist in recommended_artists %}
+		<div class="col-md-4" onclick="location.href = '/artist/{{recommended_artist.id}}';">
+			<div><img src="{{recommended_artist.Imagen}}" width="150" height="150"/></div>
+			<div><h3>{{recommended_artist.Nombre}}</h3></div>
+		</div>
+	{% endfor %}
 {% endblock %}

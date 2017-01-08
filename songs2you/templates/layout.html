@@ -36,7 +36,16 @@
 			<li><a href='/albums'>Find albums</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Login</a></li>
+          	{% if user == None %}
+            	<li><a href="/login">Login</a></li>
+            	<li><a href="/user/new">Register</a></li>
+            {% else %}
+            	<li><a href="/userindex">Welcome {{user.username}}</a></li>
+            	<li><a href="/playlist">Your playlists</a></li>
+            	<li><a href="/playlist/new">Create a new playlist</a></li>
+            	<li><a href="/users">Users</a></li>
+            	<li><a href="/logout">Logout</a></li>
+            {% endif %}
           </ul>
         </div><!--/.nav-collapse -->
       </div>

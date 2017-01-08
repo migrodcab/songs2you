@@ -383,4 +383,3 @@ def scrape(allowedGenresNames=None, finishSoundNotification=False, maxArtistsPer
 
 if __name__ == '__main__':
     scrape()
-    

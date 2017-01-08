@@ -6,15 +6,13 @@ Created on 30/12/2016
 @author: Javier Garcia (javgarcal@alum.us.es)
 '''
 
-import datetime, re
-
-from principal.models import Artista, Album, Cancion
-
 import codecs, sys, sqlite3, csv
+import datetime, re
 
 from django.db.transaction import commit_on_success
 
-from principal.models import *
+from principal.models import Artista
+
 
 reload(sys)
 sys.setdefaultencoding('UTF8')  # @UndefinedVariable
