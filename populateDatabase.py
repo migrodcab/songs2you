@@ -152,4 +152,4 @@ def load(detailed):
     loadSongs()
 
 if __name__ == "__main__":
-    load(True)
+    load(False)
