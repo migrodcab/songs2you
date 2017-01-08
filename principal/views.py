@@ -15,6 +15,11 @@ from utils import *
 
 
 def searchForm(request):
+    if request.user.is_authenticated():
+        user = request.user
+    else:
+        user = None
+    
     numArtists = Artista.objects.count()
     numAlbums = Album.objects.count()
     numSongs = Cancion.objects.count()
@@ -24,74 +29,111 @@ def searchForm(request):
         artists = Artista.objects.filter(Nombre__contains=form.cleaned_data['criteria'])
         albums = Album.objects.filter(Nombre__contains=form.cleaned_data['criteria'])
         songs = Cancion.objects.filter(Nombre__contains=form.cleaned_data['criteria'])
-        return render_to_response('index.html',{'form':form,'artists':artists,'albums':albums,'songs':songs,'numArtists':numArtists,'numAlbums':numAlbums,'numSongs':numSongs},context_instance=RequestContext(request))
+        return render_to_response('index.html',{'form':form,'artists':artists,'albums':albums,'songs':songs,'numArtists':numArtists,'numAlbums':numAlbums,'numSongs':numSongs, 'user':user},context_instance=RequestContext(request))
     else:
         form = SearchForm()
     
-    return render_to_response('index.html',{"form":form,"numArtists":numArtists,"numAlbums":numAlbums,"numSongs":numSongs},context_instance=RequestContext(request))
+    return render_to_response('index.html',{"form":form,"numArtists":numArtists,"numAlbums":numAlbums,"numSongs":numSongs, "user":user},context_instance=RequestContext(request))
     
 def songs(request, genre=None, playlist=None):  
     page = request.GET.get('page', 1)
     
     if genre != None:
         songs = Cancion.objects.filter(Generos__contains=genre)
-        paginator = Paginator(songs, 4)
+        paginator = Paginator(songs, 6)
         
     if playlist != None:
         playlist = Playlist.objects.get(Nombre=playlist)
         songs = playlist.Canciones.all()
-        paginator = Paginator(songs, 4)
+        paginator = Paginator(songs, 6)
     
     if genre == None and playlist == None:
         genres = allGenres("song")
         paginator = Paginator(genres, 12)
     
-    try:
-        data = paginator.page(page)
-    except PageNotAnInteger:
-        data = paginator.page(1)
-    except EmptyPage:
-        data = paginator.page(paginator.num_pages)
+    (data, data1, data2, data3, data4, data5, data6, data7, data8, data9, data10) = pagination(paginator, page)
+        
+    if request.user.is_authenticated():
+        user = request.user
+    else:
+        user = None
     
-    return render_to_response('songs.html',{'data':data, 'genre':genre, 'playlist':playlist},context_instance=RequestContext(request))
+    return render_to_response('songs.html',{
+                                            'data':data,
+                                            'data1':data1,
+                                            'data2':data2,
+                                            'data3':data3,
+                                            'data4':data4,
+                                            'data5':data5,
+                                            'data6':data6,
+                                            'data7':data7,
+                                            'data8':data8,
+                                            'data9':data9,
+                                            'data10':data10,
+                                            'genre':genre,'playlist':playlist,'user':user
+                                            },context_instance=RequestContext(request))
 
 def albums(request, genre=None):  
     page = request.GET.get('page', 1)
     
     if genre != None:
         albums = Album.objects.filter(Generos__contains=genre)
-        paginator = Paginator(albums, 4)
+        paginator = Paginator(albums, 6)
     else:
         genres = allGenres("album")
         paginator = Paginator(genres, 12)
   
-    try:
-        data = paginator.page(page)
-    except PageNotAnInteger:
-        data = paginator.page(1)
-    except EmptyPage:
-        data = paginator.page(paginator.num_pages)
+    (data, data1, data2, data3, data4, data5, data6, data7, data8, data9, data10) = pagination(paginator, page)
+        
+    if request.user.is_authenticated():
+        user = request.user
+    else:
+        user = None
     
-    return render_to_response('albums.html',{'data':data, 'genre':genre},context_instance=RequestContext(request))
+    return render_to_response('albums.html',{
+                                             'data':data,
+                                             'data1':data1,
+                                             'data2':data2,
+                                             'data3':data3,
+                                             'data4':data4,
+                                             'data5':data5,
+                                             'data6':data6,
+                                             'data7':data7,
+                                             'data8':data8,
+                                             'data9':data9,
+                                             'data10':data10,
+                                             'genre':genre, 'user':user},context_instance=RequestContext(request))
 
 def artists(request, genre=None):  
     page = request.GET.get('page', 1)
     
     if genre != None:
         artists = Artista.objects.filter(Generos__contains=genre)
-        paginator = Paginator(artists, 4)
+        paginator = Paginator(artists, 6)
     else:
         genres = allGenres("artist")
         paginator = Paginator(genres, 12)
   
-    try:
-        data = paginator.page(page)
-    except PageNotAnInteger:
-        data = paginator.page(1)
-    except EmptyPage:
-        data = paginator.page(paginator.num_pages)
+    (data, data1, data2, data3, data4, data5, data6, data7, data8, data9, data10) = pagination(paginator, page)
+        
+    if request.user.is_authenticated():
+        user = request.user
+    else:
+        user = None
     
-    return render_to_response('artists.html',{'data':data, 'genre':genre},context_instance=RequestContext(request))
+    return render_to_response('artists.html',{
+                                              'data':data,
+                                              'data1':data1,
+                                              'data2':data2,
+                                              'data3':data3,
+                                              'data4':data4,
+                                              'data5':data5,
+                                              'data6':data6,
+                                              'data7':data7,
+                                              'data8':data8,
+                                              'data9':data9,
+                                              'data10':data10,
+                                              'genre':genre, 'user':user},context_instance=RequestContext(request))
 
 def index(request):
     return searchForm(request)
@@ -104,8 +146,13 @@ def displayAlbum(request,albumId):
         return searchForm(request)
     else:
         form = SearchForm()
+        
+    if request.user.is_authenticated():
+        user = request.user
+    else:
+        user = None
     
-    return render_to_response('album.html',{'form':form,'album':album,'songs':songs},context_instance=RequestContext(request))
+    return render_to_response('album.html',{'form':form,'album':album,'songs':songs, 'user':user},context_instance=RequestContext(request))
 
 def displayArtist(request,artistId):
     artist = get_object_or_404(Artista, pk=artistId)
@@ -115,8 +162,13 @@ def displayArtist(request,artistId):
         return searchForm(request)
     else:
         form = SearchForm()
+        
+    if request.user.is_authenticated():
+        user = request.user
+    else:
+        user = None
     
-    return render_to_response('artist.html',{'form':form,'artist':artist,'albums':albums},context_instance=RequestContext(request))
+    return render_to_response('artist.html',{'form':form,'artist':artist,'albums':albums, 'user':user},context_instance=RequestContext(request))
 
 def newUser(request):
     if request.user.is_anonymous():
@@ -157,7 +209,7 @@ def newUser(request):
     else:
         return HttpResponseRedirect('/userindex')
     
-    return render_to_response('newuser.html', {'userForm':form}, context_instance=RequestContext(request))
+    return render_to_response('newuser.html', {'userForm':form, 'user':None}, context_instance=RequestContext(request))
 
 def loginUser(request):
     if request.user.is_anonymous():
@@ -179,7 +231,7 @@ def loginUser(request):
     else:
         return HttpResponseRedirect('/userindex')
     
-    return render_to_response('login.html', {'userForm':form}, context_instance=RequestContext(request))
+    return render_to_response('login.html', {'userForm':form, 'user':None}, context_instance=RequestContext(request))
 
 @login_required(login_url='/login')
 def userIndex(request):
@@ -215,32 +267,51 @@ def newPlaylist(request):
                 messages.error(request, "Error: You don't have two playlists with the same name.")
     else:
         form = PlaylistForm()
-    return render_to_response('playlistform.html', {'playlistForm':form}, context_instance=RequestContext(request))
+        
+    if request.user.is_authenticated():
+        user = request.user
+    else:
+        user = None
+    
+    return render_to_response('playlistform.html', {'playlistForm':form, 'user':user}, context_instance=RequestContext(request))
 
 @login_required(login_url='/login')
-def playlists(request, playlist=None):  
+def playlists(request, playlist=None, userId=None):  
     page = request.GET.get('page', 1)
     
     if playlist != None:
         return HttpResponseRedirect('/songs/playlist/'+playlist)
+    elif userId != None:
+        userView = Profile.objects.get(id=userId)
+        playlists = Playlist.objects.filter(Profile=userView)
+        paginator = Paginator(playlists, 9)
     else:
-        playlists = Playlist.objects.filter(Profile=request.user.get_profile())
-        paginator = Paginator(playlists, 6)
+        userView = request.user.get_profile
+        playlists = Playlist.objects.filter(Profile=userView)
+        paginator = Paginator(playlists, 9)
         
     user = request.user
   
-    try:
-        data = paginator.page(page)
-    except PageNotAnInteger:
-        data = paginator.page(1)
-    except EmptyPage:
-        data = paginator.page(paginator.num_pages)
+    (data, data1, data2, data3, data4, data5, data6, data7, data8, data9, data10) = pagination(paginator, page)
     
-    return render_to_response('playlists.html',{'data':data, 'user':user},context_instance=RequestContext(request))
+    return render_to_response('playlists.html',{
+                                                'data':data,
+                                                'data1':data1,
+                                                'data2':data2,
+                                                'data3':data3,
+                                                'data4':data4,
+                                                'data5':data5,
+                                                'data6':data6,
+                                                'data7':data7,
+                                                'data8':data8,
+                                                'data9':data9,
+                                                'data10':data10,
+                                                'user':user, 'userView':userView},context_instance=RequestContext(request))
 
 @login_required(login_url='/login')
 def addSongToPlaylist(request, songId):
-    id = request.user.id
+    user = request.user
+    id = user.id
     if request.method == 'POST':
         form = Make_AddSongToPlaylistForm(userId=id, post=request.POST)
         if form.is_valid():
@@ -254,4 +325,29 @@ def addSongToPlaylist(request, songId):
     else:
         form = Make_AddSongToPlaylistForm(userId=id)
     
-    return render_to_response('addsongtoplaylistform.html', {'playlistForm':form, 'songId':songId}, context_instance=RequestContext(request))
+    return render_to_response('addsongtoplaylistform.html', {'playlistForm':form, 'songId':songId, 'user':user}, context_instance=RequestContext(request))
+
+@login_required(login_url='/login')
+def users(request): 
+    user = request.user 
+    page = request.GET.get('page', 1)
+    
+    users = Profile.objects.exclude(user=request.user)
+    
+    paginator = Paginator(users, 12)
+  
+    (data, data1, data2, data3, data4, data5, data6, data7, data8, data9, data10) = pagination(paginator, page)
+    
+    return render_to_response('users.html',{
+                                            'data':data,
+                                            'data1':data1,
+                                            'data2':data2,
+                                            'data3':data3,
+                                            'data4':data4,
+                                            'data5':data5,
+                                            'data6':data6,
+                                            'data7':data7,
+                                            'data8':data8,
+                                            'data9':data9,
+                                            'data10':data10,
+                                            'user':user},context_instance=RequestContext(request))

@@ -15,7 +15,9 @@
 				<div><img src="{{song.Album.ImagenPortada}}" width="150"/></div>
 				<div><h3>Song: {{song.Nombre}}</h3></div>
 				<div><h4>Album: {{song.Album.Nombre}}</h4></div>
-				<a href='/playlist/addsong/{{song.id}}'>Add to Playlist!</a>
+				{% if user != None %}
+					<a href='/playlist/addsong/{{song.id}}'>Add to Playlist!</a>
+				{% endif %}
 			</div>
 		{% endfor %}
 	</div>

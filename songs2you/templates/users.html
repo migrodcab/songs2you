@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title %} Playlists {% endblock %}
+{% block title %} Users {% endblock %}
 
 {% block style %}
 	.col-md-4 {
@@ -9,13 +9,13 @@
 {% endblock %}
 
 {% block content %}
-	<h1>Playlists - {{userView.user.username}}</h1>
+	<h1>Users:</h1>
 	<div class="row">
-		{% for list in data %}
-			<div class="col-md-4" onclick="location.href = '/songs/playlist/{{list}}';">
-				<div><h4>{{list}}</h4></div>
-			</div>
-		{% endfor %}
+	{% for userView in data %}
+		<div class="col-md-4" onclick="location.href = '/playlist/userId={{userView.id}}';">
+			<div><h3>{{userView.user.first_name}} {{userView.user.last_name}} - ({{userView.user.username}})</h3></div>
+		</div>
+	{% endfor %}
 	</div>
 
 {% if data.has_other_pages %}
