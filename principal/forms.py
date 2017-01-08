@@ -1,8 +1,7 @@
 #encoding:utf-8
 from django import forms
-from django.forms.models import ModelForm
 from django.contrib.auth.models import User
-from principal.models import Playlist, Cancion
+from principal.models import Cancion
 
 class SearchForm(forms.Form):
     criteria = forms.CharField(label="Search artists, albums or songs")

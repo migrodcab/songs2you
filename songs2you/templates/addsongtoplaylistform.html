@@ -8,6 +8,6 @@
 	<form id='form' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
 		<table>{{playlistForm}}</table>
 		<input type="hidden" name="songId" value="{{songId}}" />
-		<p><input type='submit' value='Confirm'/></p>
+		<p><input type='submit' class='btn btn-primary' value='Confirm'/></p>
 	</form>
 {% endblock %}
