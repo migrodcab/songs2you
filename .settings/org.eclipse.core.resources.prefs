@@ -4,6 +4,6 @@ encoding//principal/models.py=utf-8
 encoding//principal/views.py=utf-8
 encoding//songs2you/settings.py=utf-8
 encoding//songs2you/templates/index.html=UTF-8
-encoding/datasetScrapping.py=iso-8859-15
+encoding/datasetScraping.py=iso-8859-15
 encoding/populateDatabase.py=iso-8859-15
 encoding/utils.py=iso-8859-15
