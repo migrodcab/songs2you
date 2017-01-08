@@ -7,7 +7,7 @@
 	
 	<form id='form' method='post' action=''>{% csrf_token %}
 		<table>{{userForm}}</table>
-		<p><input type='submit' value='Register'/></p>
+		<p><input type='submit' class='btn btn-primary' value='Register'/></p>
 	</form>
 	
 	{% if messages %}
